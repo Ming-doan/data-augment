@@ -4,9 +4,9 @@
 
 ## Clone this project ⚡
 
-```powershell
+```bash
 # Clone this project from github
-git clone  drabridge
+git clone https://github.com/Ming-doan/data-augment.git drabridge
 # Change directory
 cd ./drabridge/
 # Create virtualenv (optional, you can use your own environment)
