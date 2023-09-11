@@ -1,11 +1,11 @@
 """
-Writer: Nguyễn Đăng Khoa
+Writer: Đào Ngọc Huy
 """
 
 from ._utils import *
 
 
-class Translate(Method):
+class HideAndSeek(Method):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.frame_cutter = False

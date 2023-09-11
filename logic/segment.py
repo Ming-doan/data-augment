@@ -1,11 +1,11 @@
 """
-Writer: Nguyễn Đăng Khoa
+Writer: Nguyễn Hoàng Hải
 """
 
 from ._utils import *
 
 
-class Translate(Method):
+class MeanShiftSegmentation(Method):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.frame_cutter = False

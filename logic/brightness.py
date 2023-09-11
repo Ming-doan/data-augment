@@ -1,12 +1,17 @@
+"""
+Writer: Võ Phi Trường
+"""
+
 from ._utils import *
 
 
 class Brightness(Method):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rand = DistRand((0.5, 1.5))
+        self.frame_cutter = False
 
     def transform(self, images, bboxs, width, height):
-        images = images * self.rand.rand()
+        # Define your algorithm here 👇
 
+        # Define your algorithm here 👆
         return images, bboxs

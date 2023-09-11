@@ -2,8 +2,16 @@ from ._interface import Interface
 from ._utils import *
 # Transform methods
 # Import your_method here 👇
+from .translate import Translate
 from .brightness import Brightness
+from .noise import GaussianNoise, SaltAndPepperNoise
+from .contrast import SigmoidContrast, GammarContrast, HistogramContrast, CLAHEContrast
+from .blur import GaussianBlur, MedianBlur, MotionBlur
+from .cutout import CutOut
+from .rotate import Rotation
 from .squeeze import Squeeze
+from .hidenseek import HideAndSeek
+from .mask import GridMask
 
 
 class _BaseAugmentation:
@@ -67,11 +75,12 @@ class Augmentation(_BaseAugmentation):
             raise ValueError('Flow is not set')
 
     def __set_writer(self, save_directory: str, **kwargs):
+        _writer = kwargs.get('writer', YOLO(save_directory, **kwargs))
         if self.writer is not None:
             if self.writer.directory != save_directory:
-                self.writer = YOLO(save_directory, **kwargs)
+                self.writer = _writer
         else:
-            self.writer = YOLO(save_directory, **kwargs)
+            self.writer = _writer
 
     def __format(self, images: Interface.Images, bboxs: Interface.Bboxs):
         # Format images
@@ -123,9 +132,11 @@ class Augmentation(_BaseAugmentation):
         # Init figure
         fig, ax = plt.subplots(1, 2, figsize=(10, 5))
         # Show original image
-        draw_on_ax(ax[0], img, bboxs, cats)
+        draw_on_ax(ax[0], img, bboxs, cats, title='Original')
         # Show transformed image
-        draw_on_ax(ax[1], new_img, new_bboxs, cats)
+        draw_on_ax(ax[1], new_img, new_bboxs, cats,
+                   title=f'Transformed: {method.__class__.__name__}')
+        plt.tight_layout()
         # Convert figure to PIL image
         pil_image = fig2img(fig)
         # Close figure

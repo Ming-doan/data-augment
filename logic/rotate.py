@@ -1,11 +1,11 @@
 """
-Writer: Nguyễn Đăng Khoa
+Writer: Đoàn Quang Minh
 """
 
 from ._utils import *
 
 
-class Translate(Method):
+class Rotation(Method):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.frame_cutter = False

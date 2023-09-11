@@ -61,12 +61,12 @@ def images_placer(images: list[cv.Mat], bboxs: list[list[int, int, int, int]], o
     for i, image in enumerate(images):
         bbox = bboxs[i]
         x, y, w, h = bbox
-        x, y, w, h = round(x), round(y), round(w), round(h)
+        x, y, w, h = int(x), int(y), int(w), int(h)
         original_image[y:y+h, x:x+w] = image
     return original_image
 
 
-def draw_on_ax(ax: plt.Axes, image: cv.Mat, bboxs: list[list[int, int, int, int]], cats: list[str]):
+def draw_on_ax(ax: plt.Axes, image: cv.Mat, bboxs: list[list[int, int, int, int]], cats: list[str], title: str = None):
     ax.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
     for i, bbox in enumerate(bboxs):
         x, y, w, h = bbox
@@ -74,6 +74,8 @@ def draw_on_ax(ax: plt.Axes, image: cv.Mat, bboxs: list[list[int, int, int, int]
         ax.add_patch(plt.Rectangle((x, y), w, h, fill=False,
                      edgecolor='red', linewidth=1))
         ax.text(x, y, cats[i], fontdict={'color': 'red', 'size': 10})
+    if title is not None:
+        ax.set_title(title)
 
 
 def fig2img(fig):
@@ -160,6 +162,18 @@ def logger(message: str, level: Literal['success', 'info', 'warning', 'error'] =
         print(message)
     else:
         raise ValueError('Invalid level')
+
+
+def signature_checker(signature: str):
+    if not all(ord(char) < 128 for char in signature):
+        logger('Signature must be ASCII', level='error')
+        raise ValueError('Signature must be ASCII')
+    if len(signature) > 20:
+        logger('Signature is too long', level='error')
+        raise ValueError('Signature is too long')
+    if not signature.isalnum():
+        logger('Signature must be alphanumeric', level='error')
+        raise ValueError('Signature must be alphanumeric')
 
 
 class Default:
