@@ -11,8 +11,13 @@ git clone https://github.com/Ming-doan/data-augment.git drabridge
 cd ./drabridge/
 # Create virtualenv (optional, you can use your own environment)
 pip install virtualenv
+virtualenv env
+# Activate env
 env/Scripts/activate
+# If your computer is unable to use the above command, use this command before
+Set-ExecutionPolicy Unrestricted -Scope Process
 # Download requirement libraries
+# Make sure your command line show 👉(env) ...
 pip install -r requirements.txt
 ```
 
@@ -39,7 +44,7 @@ RUNME.ipynb
 - Modify your `SIGNATURE`.
 - The `SIGNATURE` must **NOT** contain space or special characters.
 
-In `RUNME.ipynb` at cell `1`
+In `RUNME.ipynb` at cell `2`
 
 ```py
 SIGNATURE = 'someFancyName'
@@ -47,7 +52,7 @@ SIGNATURE = 'someFancyName'
 
 ### Configuation amount of sample on each methods
 
-Define as constant amount. In `RUNME.ipynb` at cell `2`
+Define as constant amount. In `RUNME.ipynb` at cell `3`
 
 ```py
 from logic import Original, Brightness
@@ -57,7 +62,7 @@ METHODS = [
 ]
 ```
 
-Define as fraction of total data. In `RUNME.ipynb` at cell `2`
+Define as fraction of total data. In `RUNME.ipynb` at cell `3`
 
 ```py
 from logic import Original, Brightness
@@ -82,7 +87,7 @@ In the cell `3` of `RUNME.ipynb`. There are the table for check the total of sam
 
 ### Concat multiple methods
 
-In `RUNME.ipynb` at cell `2`
+In `RUNME.ipynb` at cell `3`
 
 ```py
 from logic import Original, Brightness, Squeeze, Pipe
