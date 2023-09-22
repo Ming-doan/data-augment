@@ -12,6 +12,7 @@ from .rotate import Rotation
 from .squeeze import Squeeze
 from .hidenseek import HideAndSeek
 from .mask import GridMask
+from .weather import RandomRainTonyD, RandomSnowTonyD, RandomSunFlareTonyD, RandomShadowTonyD
 from .segment import MeanShiftSegmentation
 
 
