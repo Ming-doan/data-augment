@@ -4,6 +4,7 @@ import uuid
 import shutil
 import cv2 as cv
 import numpy as np
+from sklearn.cluster import MeanShift, estimate_bandwidth
 from PIL import Image
 from abc import abstractmethod
 import matplotlib.pyplot as plt
