@@ -4,6 +4,7 @@ Writer: Võ Phi Trường
 
 from ._utils import *
 import cv2
+import numpy as np
 
 class SigmoidContrast(Method):
     def __init__(self, *args, **kwargs):
@@ -61,12 +62,15 @@ class HistogramContrast(Method):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.frame_cutter = False
-
+        self.rand = DistRand(range(1.35, 1.7, 0.05),mode='norm')
     def transform(self, images, bboxs, width, height):
         # Define your algorithm here 👇
         # Convert the image to gray
+        num = self.rand.rand()
         images = cv2.cvtColor(images, cv2.COLOR_BGR2HSV)
-        h, s, v = images[:,:,0], images[:,:,1], images[:,:,2]
+        h, s, v = images[:,:,0], images[:,:,1], images[:,:,2]   
+        v = np.round(v*num, 0).astype(np.uint8)
+        
         v = cv2.equalizeHist(v)
         images = np.dstack((h,s,v))
         # Convert gray to the Image
@@ -79,14 +83,15 @@ class CLAHEContrast(Method):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.frame_cutter = False
+        self.rand = DistRand(range=(1,10,1), mode='norm')
 
     def transform(self, images, bboxs, width, height):
         # Define your algorithm here 👇
         images = cv2.cvtColor(images, cv2.COLOR_BGR2HSV)
-        
+        num = self.rand.rand()
         h, s, v = images[:,:,0], images[:,:,1], images[:,:,2]
         #clipLimit -> Threshold for contrast limiting
-        clahe = cv2.createCLAHE(clipLimit=5.0, tileGridSize =(8,8))
+        clahe = cv2.createCLAHE(clipLimit=num, tileGridSize =(8,8))
         v = clahe.apply(v)
         images = np.dstack((h,s,v))
         images = cv2.cvtColor(images, cv2.COLOR_HSV2BGR)
