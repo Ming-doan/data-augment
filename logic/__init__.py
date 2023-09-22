@@ -6,12 +6,13 @@ from .translate import Translate
 from .brightness import Brightness
 from .noise import GaussianNoise, SaltAndPepperNoise
 from .contrast import SigmoidContrast, GammarContrast, HistogramContrast, CLAHEContrast
-from .blur import GaussianBlur, MedianBlur, MotionBlur
+from .blur import GaussianBlur, MedianBlur, MotionBlurHorizontal, MotionBlurVertical
 from .cutout import CutOut
 from .rotate import Rotation
 from .squeeze import Squeeze
 from .hidenseek import HideAndSeek
 from .mask import GridMask
+from .segment import MeanShiftSegmentation
 
 
 class _BaseAugmentation:
