@@ -86,7 +86,7 @@ class GridMask(Method):
 
     def transform(self, images, bboxs, width, height):
         # Define your algorithm here 👇
-        num_grid = random.randint(3, 10)       
+        num_grid = random.randint(10, 20)       
         transforms_train = albumentations.Compose([GridMaskTonyD(num_grid=num_grid, p=1),])
         images = transforms_train(image=images)['image']
 

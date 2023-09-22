@@ -15,7 +15,8 @@ class HideAndSeek(Method):
         # Hide and seek algorithm
 
         # possible grid size, 0 means no hiding
-        grid_sizes = random.sample(range(0, 100, 10), 10)
+        grid_sizes = random.sample(range(50, 100, 5), 10)
+        print(grid_sizes)
 
         # hiding probability
         hide_prob = 0.5
