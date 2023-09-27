@@ -77,12 +77,12 @@ class Augmentation(_BaseAugmentation):
             raise ValueError('Flow is not set')
 
     def __set_writer(self, save_directory: str, **kwargs):
-        _writer = kwargs.get('writer', YOLO(save_directory, **kwargs))
+        _writer = kwargs.get('writer', YOLO)
         if self.writer is not None:
             if self.writer.directory != save_directory:
-                self.writer = _writer
+                self.writer = _writer(save_directory, **kwargs)
         else:
-            self.writer = _writer
+            self.writer = _writer(save_directory, **kwargs)
 
     def __format(self, images: Interface.Images, bboxs: Interface.Bboxs):
         # Format images

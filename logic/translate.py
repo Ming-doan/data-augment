@@ -27,11 +27,9 @@ class Translate(Method):
 
         for i, bbox in enumerate(bboxs):
             x, y, w, h = bbox
-            print(x, y, w, h)
             x -= transX[i]
             y -= transY[i]
 
-            print(list((x, y, w, h)))
             new_bboxs.append(list((x, y, w, h)))
 
         # Define your algorithm here 👆

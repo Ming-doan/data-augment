@@ -5,8 +5,9 @@ Writer: Đào Ngọc Huy
 from ._utils import *
 import random
 
+
 class HideAndSeek(Method):
-    def __init__(self, *args, **kwargs)->None:
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.frame_cutter = False
 
@@ -16,22 +17,20 @@ class HideAndSeek(Method):
 
         # possible grid size, 0 means no hiding
         grid_sizes = random.sample(range(50, 100, 5), 10)
-        print(grid_sizes)
 
         # hiding probability
         hide_prob = 0.5
         # randomly choose one grid size
-        grid_size= grid_sizes[random.randint(0,len(grid_sizes)-1)]
+        grid_size = grid_sizes[random.randint(0, len(grid_sizes)-1)]
 
         # hide the patches
-        if(grid_size!=0):
-            for x in range(0,width,grid_size):
-                for y in range(0,height,grid_size):
+        if (grid_size != 0):
+            for x in range(0, width, grid_size):
+                for y in range(0, height, grid_size):
                     x_end = min(width, x + grid_size)
                     y_end = min(height, y + grid_size)
-                    if(random.random() <=  hide_prob):
-                        images[x:x_end,y:y_end,:]=0
-
+                    if (random.random() <= hide_prob):
+                        images[x:x_end, y:y_end, :] = 0
 
         # Define your algorithm here 👆
         return images, bboxs

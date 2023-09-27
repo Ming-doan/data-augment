@@ -3,6 +3,7 @@ Writer: Nguyễn Hoàng Hải
 """
 
 from ._utils import *
+from sklearn.cluster import MeanShift, estimate_bandwidth
 
 
 class MeanShiftSegmentation(Method):
@@ -19,10 +20,12 @@ class MeanShiftSegmentation(Method):
             pixels = np.float32(pixels)
 
             # Estimate the bandwidth (you can adjust this value)
-            bandwidth = estimate_bandwidth(pixels, quantile=0.06, n_samples=3000)
+            bandwidth = estimate_bandwidth(
+                pixels, quantile=0.06, n_samples=3000)
 
             # Perform Mean Shift clustering
-            ms_clustering = MeanShift(bandwidth=bandwidth, max_iter=800, bin_seeding=True)
+            ms_clustering = MeanShift(
+                bandwidth=bandwidth, max_iter=800, bin_seeding=True)
             ms_clustering.fit(pixels)
 
             # Get the labels and cluster centers
@@ -30,7 +33,8 @@ class MeanShiftSegmentation(Method):
             cluster_centers = ms_clustering.cluster_centers_
 
             # Create a segmented image using cluster labels
-            segmented_image = cluster_centers[labels].reshape(image.shape).astype(np.uint8)
+            segmented_image = cluster_centers[labels].reshape(
+                image.shape).astype(np.uint8)
 
             return segmented_image
 
