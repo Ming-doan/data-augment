@@ -4,7 +4,6 @@ import uuid
 import shutil
 import cv2 as cv
 import numpy as np
-from sklearn.cluster import MeanShift, estimate_bandwidth
 from PIL import Image
 from abc import abstractmethod
 import matplotlib.pyplot as plt
@@ -266,47 +265,23 @@ class COCO:
             yield self.__get_by_id(i, get_id=True)
 
 
-class YOLO:
-    def __init__(self, directory: str, *args, **kwargs):
+class BaseWriter:
+    def __init__(self, directory: str, **kwargs):
         self.directory = directory
         self.overwrite = kwargs.get('overwrite') if kwargs.get(
             'overwrite') is not None else True
-        self.format = kwargs.get('format') if kwargs.get(
-            'format') is not None else False
 
         # Make directory
-        self.__make_dir(directory)
+        self.make_dir(directory)
 
-        # Make images directory
-        self.__make_dir(f'{self.directory}/images')
-
-        # Make labels directory
-        self.__make_dir(f'{self.directory}/labels')
-
-        # Warning for overwrite mode
-        if self.overwrite:
-            logger(
-                f'Images and labels will be overwritten in {self.directory}', level='warning')
-            # Clear images directory
-            self.__clear_dir(f'{self.directory}/images')
-            # Clear labels directory
-            self.__clear_dir(f'{self.directory}/labels')
-
-        # Warning for format mode
-        if self.format:
-            logger(
-                f'Labels will be formatted in YOLO syntax', level='warning')
-
-    def __make_dir(self, directory: str):
+    def make_dir(self, directory: str):
         if not os.path.exists(directory):
             try:
                 os.mkdir(directory)
             except Exception as e:
-                logger(f'Failed to create {directory}', level='error')
                 raise e
-            logger(f'Created {directory}', level='success')
 
-    def __clear_dir(self, directory: str):
+    def clear_dir(self, directory: str):
         scan_obj = os.scandir(directory)
         for entry in scan_obj:
             if entry.is_dir():
@@ -315,13 +290,46 @@ class YOLO:
                 os.remove(entry.path)
         scan_obj.close()
 
+    @abstractmethod
+    def write(self, image: Interface.Images, width: Interface.W, height: Interface.H,
+              bboxs: Interface.Bboxs, cats: list[int]) -> str:
+        """
+        Implement write image into folder.
+        """
+
+
+class YOLO(BaseWriter):
+    def __init__(self, directory: str, **kwargs):
+        super().__init__(directory, **kwargs)
+        self.format = kwargs.get('format') if kwargs.get(
+            'format') is not None else False
+
+        # Make images directory
+        self.make_dir(f'{self.directory}/images')
+
+        # Make labels directory
+        self.make_dir(f'{self.directory}/labels')
+
+        # Warning for overwrite mode
+        if self.overwrite:
+            logger(
+                f'Images and labels will be overwritten in {self.directory}', level='warning')
+            # Clear images directory
+            self.clear_dir(f'{self.directory}/images')
+            # Clear labels directory
+            self.clear_dir(f'{self.directory}/labels')
+
+        # Warning for format mode
+        if self.format:
+            logger(
+                f'Labels will be formatted in YOLO syntax', level='warning')
+
     def __format_yolo(self, bbox: list[int], width: Interface.W, height: Interface.H) -> list[int]:
         x, y, w, h = bbox
         x, y, w, h = x / width, y / height, w / width, h / height
         return x, y, w, h
 
-    def write(self, image: Interface.Images, width: Interface.W, height: Interface.H,
-              bboxs: Interface.Bboxs, cats: list[int]):
+    def write(self, image, width, height, bboxs, cats):
         # Create filename
         filename = uuid.uuid4().hex
         # Write image
@@ -336,6 +344,41 @@ class YOLO:
                     x, y, w, h = bbox
                     x, y, w, h = round(x), round(y), round(w), round(h)
                 f.write(f'{cats[i]} {x} {y} {w} {h}\n')
+        return filename
+
+
+class CNN(BaseWriter):
+    def __init__(self, directory: str, shape: tuple[int] = 112, **kwargs):
+        super().__init__(directory, **kwargs)
+        self.format = kwargs.get('format', False)
+        self.shape = (shape, shape)
+        self.mode = kwargs.get('mode', 'scale')  # 'keep', 'scale'
+        self.threshold = kwargs.get('threshold', 10)
+
+        # Make directory
+        self.make_dir(directory)
+
+    def write(self, image, width, height, bboxs, cats):
+        # Split image
+        images = image_cutter(image, bboxs)
+        # Iterate over images
+        for i, _image in enumerate(images):
+            filename = uuid.uuid4().hex
+            # Check if image not empty
+            if _image.shape[0] < self.threshold or _image.shape[1] < self.threshold:
+                continue
+            cat = cats[i]
+            # Create folder by cat name
+            self.make_dir(f'{self.directory}/{str(cat)}')
+            # Preprocessing image
+            if self.mode == 'scale':
+                _image = cv.resize(_image, self.shape)
+            # Write image
+            try:
+                cv.imwrite(
+                    f'{self.directory}/{str(cat)}/{filename}.{Default.ImageExtension}', _image)
+            except Exception as e:
+                logger(f'Failed to write image {filename}: {e}', level='error')
         return filename
 
 

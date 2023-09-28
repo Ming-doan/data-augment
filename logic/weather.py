@@ -18,10 +18,12 @@ class RandomRainTonyD(Method):
         slant_lower = random.randint(-20, 0)
         slant_upper = random.randint(0, 20)
         random.seed(42)
-        transform = A.Compose([A.RandomRain(rain_type='heavy', brightness_coefficient=0.7, blur_value=2, slant_lower=slant_lower, slant_upper=slant_upper, p=0.5)],)
+        transform = A.Compose([A.RandomRain(rain_type='heavy', brightness_coefficient=0.7,
+                              blur_value=2, slant_lower=slant_lower, slant_upper=slant_upper, p=0.5)],)
         images = transform(image=images)['image']
         # Define your algorithm here 👆
         return images, bboxs
+
 
 class RandomSnowTonyD(Method):
     def __init__(self, *args, **kwargs):
@@ -35,10 +37,12 @@ class RandomSnowTonyD(Method):
         snow_point_upper = random.randint(5, 10) / 10
         snow_point_lower = random.randint(0, 5) / 10
         random.seed(42)
-        transform = A.Compose([A.RandomSnow(brightness_coeff=2.5, snow_point_upper = snow_point_upper, snow_point_lower=snow_point_lower, p=1)],)
+        transform = A.Compose([A.RandomSnow(
+            brightness_coeff=2.5, snow_point_upper=snow_point_upper, snow_point_lower=snow_point_lower, p=1)],)
         images = transform(image=images)['image']
         # Define your algorithm here 👆
         return images, bboxs
+
 
 class RandomSunFlareTonyD(Method):
     def __init__(self, *args, **kwargs):
@@ -67,13 +71,14 @@ class RandomSunFlareTonyD(Method):
         random_flare_roi = (x_min, y_min, x_max, y_max)
         # random_flare_roi = (0, 0, 1, 0.5)
 
-        print(random_flare_roi)
         random.seed(42)
-        transform = A.Compose([A.RandomSunFlare(flare_roi = random_flare_roi,angle_lower = lower, angle_upper = upper,src_radius=src_radius)],)
+        transform = A.Compose([A.RandomSunFlare(
+            flare_roi=random_flare_roi, angle_lower=lower, angle_upper=upper, src_radius=src_radius)],)
         images = transform(image=images)['image']
         # Define your algorithm here 👆
         return images, bboxs
-    
+
+
 class RandomShadowTonyD(Method):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -100,7 +105,8 @@ class RandomShadowTonyD(Method):
             random_roi = (x_min, y_min, x_max, y_max)
             shadow_dimension = random.randint(3, 8)
             image = np.array(image)
-            transform = A.Compose([A.RandomShadow(shadow_roi=random_roi, shadow_dimension=shadow_dimension)],)
+            transform = A.Compose(
+                [A.RandomShadow(shadow_roi=random_roi, shadow_dimension=shadow_dimension)],)
             random.seed(42)
             image = transform(image=image)['image']
             result.append(image)
